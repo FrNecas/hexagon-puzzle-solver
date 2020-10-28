@@ -1,4 +1,5 @@
 from __future__ import annotations
+import sys
 from typing import Dict, List, Tuple, Set
 
 
@@ -199,3 +200,18 @@ class HexMap:
         """Solves the hexagon problem trying to fit `solve_for` numbers into the hexagon."""
         current_node = Hex(0, -self.radius, self.radius)
         self._walk(current_node, 0, self.radius, 0, [x + 1 for x in range(solve_for)], 0)
+
+
+if __name__ == '__main__':
+    if len(sys.argv) != 3:
+        print("Invalid number of arguments!\nUsage: python3 hexagon.py <grid radius> <number of choices>")
+        sys.exit(1)
+    try:
+        radius = int(sys.argv[1], 10)
+        choices = int(sys.argv[2], 10)
+    except ValueError:
+        print("Arguments must be numbers!\nUsage: python3 hexagon.py <grid radius> <number of choices>")
+        sys.exit(1)
+
+    hex_map = HexMap(radius)
+    hex_map.solve_problem(choices)
