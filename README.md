@@ -11,6 +11,7 @@ You can see an example of such a grid in the image below. Such image satisfies t
 <p align="center">
   <img src="gridexample.png">
 </p>
+
 ## Usage
 
 The program has no external dependencies, only Python3.6 (3.6 due to using the new typing features) or higher is required for running the program. The program requires 2 arguments (numbers), first of which is the grid radius and second is the number of colors (numbers) to try putting in the grid. In order to solve the problem in the image above, run the program as:
