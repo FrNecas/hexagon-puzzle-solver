@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 
 
 class Hex:
@@ -40,3 +40,54 @@ class Hex:
             direction: Direction to step in, must be between 0 and 5
         """
         return self.hex_add(self, Hex(*self.NEIGHBOURS[direction]))
+
+
+class HexMap:
+    """Represents a hexagonal map of hexagons."""
+    def __init__(self, radius: int):
+        self._map: Dict[Hex, int] = {}
+        self.radius: int = radius
+        self.diameter: int = 2 * radius + 1
+
+        # Create a hexagon shape from hexagons
+        for q in range(-radius, radius + 1):
+            r1 = max(-radius, -q - radius)
+            r2 = min(radius, -q + radius)
+            for r in range(r1, r2 + 1):
+                self._map[Hex(q, r, -q - r)] = 0
+
+    def get_direction(self, start: Hex, direction: int):
+        """Creates an iterator over a row/diagonal in the given direction."""
+        # Rollback to the start of the row
+        while start in self._map:
+            start = start.neighbour(direction + 3)
+        start = start.neighbour(direction)
+
+        # Yield the row
+        while start in self._map:
+            yield start
+            start = start.neighbour(direction)
+
+    def print(self):
+        """Prints the text representation of the map."""
+        min_row_len = current_row_len = self.diameter - self.radius
+        # start in the top left corner
+        starting_hexagon = Hex(0, -self.radius, self.radius)
+        shift = 1
+        while current_row_len > min_row_len - 1:
+            starting_spaces = self.diameter - current_row_len
+            print(starting_spaces * ' ', end='')
+            for hexagon in self.get_direction(starting_hexagon, 0):
+                print(self._map[hexagon], end=' ')
+            print()
+
+            if current_row_len == self.diameter:
+                # We've reached the middle row, the rows are shrinking
+                shift = -1
+            current_row_len += shift
+            if shift == 1:
+                starting_hexagon = starting_hexagon.neighbour(2)
+            else:
+                starting_hexagon = starting_hexagon.neighbour(1)
+        print()
+
